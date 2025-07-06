@@ -4,17 +4,17 @@
   "scope": "/treino_higor/",
   "start_url": "/treino_higor/",
   "display": "standalone",
-  "background_color": "#f9fafb",
-  "theme_color": "#16a34a",
+  "background_color": "#F8F9FA",
+  "theme_color": "#3B82F6",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://placehold.co/192x192/16a34a/white?text=Dieta",
+      "src": "https://placehold.co/192x192/3B82F6/white?text=Treino",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://placehold.co/512x512/16a34a/white?text=Dieta",
+      "src": "https://placehold.co/512x512/3B82F6/white?text=Treino",
       "type": "image/png",
       "sizes": "512x512"
     }
