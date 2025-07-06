@@ -1,1 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Plano de Treino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; }
+        .modal-backdrop {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 40; opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-backdrop.active { opacity: 1; }
+        .modal-backdrop.active .modal-content { transform: translateY(0) scale(1); }
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+        .tab-btn.active {
+            background-color: #FFF;
+            border-color: #A3BFFA;
+            color: #3B82F6;
+        }
+        .tab-btn:not(.active) {
+            background-color: transparent;
+            color: #6B7280;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto px-4 pt-10 pb-12 md:px-6 md:pt-12 max-w-2xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold tracking-tight text-gray-800">Meu Plano de Treino</h1>
+            <p class="text-md text-gray-600 mt-1">Fase 1: Foco em Harmonia e Proporção</p>
+        </header>
+
+        <!-- Navegação por Abas -->
+        <nav class="p-1 mb-8 bg-blue-100 rounded-lg flex justify-center space-x-2">
+            <button id="tab-treino" class="tab-btn active" onclick="switchTab('treino')">Treino</button>
+            <button id="tab-analise" class="tab-btn" onclick="switchTab('analise')">Análise</button>
+        </nav>
+
+        <!-- Conteúdo das Abas -->
+        <main>
+            <div id="content-treino" class="tab-content active">
+                <div id="workouts-container" class="space-y-8">
+                    <!-- Os treinos serão inseridos aqui pelo JavaScript -->
+                </div>
+                <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 06/07/2025</p>
+            </div>
+            <div id="content-analise" class="tab-content">
+                <div id="analysis-dashboard" class="space-y-6">
+                    <!-- Dashboard de Análise será inserido aqui -->
+                </div>
+                 <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 06/07/2025</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Detalhes do Exercício -->
+    <div id="exercise-modal" class="modal-backdrop flex items-center justify-center" onclick="closeModal('exercise-modal')">
+        <div class="modal-content bg-white w-11/12 md:max-w-md mx-auto rounded-lg shadow-xl p-6" onclick="event.stopPropagation()">
+            <h3 id="exercise-modal-title" class="text-xl font-bold text-gray-800 mb-4">Detalhes do Exercício</h3>
+            <div id="exercise-modal-content" class="space-y-4 text-gray-700">
+                <!-- Conteúdo do modal inserido via JS -->
+            </div>
+            <button onclick="closeModal('exercise-modal')" class="mt-6 w-full bg-gray-200 text-gray-700 py-2.5 rounded-lg font-semibold hover:bg-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        // --- BANCO DE DADOS DOS TREINOS ---
+        const workoutData = {
+            workouts: [
+                { id: 'treino_a', name: 'Treino A: Inferiores (Quadríceps e Glúteos)', exercises: ['cadeira_extensora_a', 'leg_press_45_a', 'cadeira_abdutora', 'mesa_flexora_a', 'panturrilha_leg_press'] },
+                { id: 'treino_b', name: 'Treino B: Superiores (Peitoral Superior e Ombros)', exercises: ['supino_inclinado_halteres', 'elevacao_lateral_sentado', 'desenvolvimento_maquina', 'triceps_polia_corda'] },
+                { id: 'treino_c', name: 'Treino C: Inferiores (Posteriores e Glúteos)', exercises: ['mesa_flexora_c', 'hack_machine', 'elevacao_pelvica', 'cadeira_adutora', 'panturrilha_sentado'] },
+                { id: 'treino_d', name: 'Treino D: Superiores (Largura do Dorso)', exercises: ['puxada_frontal_polia', 'remada_curvada_halter', 'remada_maquina_neutra', 'face_pull', 'rosca_biceps_inclinado'] }
+            ],
+            exercises: {
+                // Treino A
+                'cadeira_extensora_a': { name: 'Cadeira Extensora', series: 3, reps: '10-15', rest: '60-90s', muscleGroup: 'Quadríceps', info: '<strong>Foco:</strong> Use como aquecimento e pré-ativação. Concentre-se em espremer o quadríceps no pico de contração por 1-2 segundos.<br><br><strong>Técnica:</strong> Isola o quadríceps com segurança, aumentando o fluxo sanguíneo para a região antes dos exercícios compostos, sem carga axial na coluna.' },
+                'leg_press_45_a': { name: 'Leg Press 45°', series: 4, reps: '8-12', rest: '60-90s', muscleGroup: 'Quadríceps', info: '<strong>Foco:</strong> Mantenha os pés na largura dos ombros. Controle a descida (fase excêntrica) e evite que a sua lombar perca o contato com o banco (retroversão pélvica).<br><br><strong>Técnica:</strong> Exercício base para volume de pernas com alta capacidade de carga e total apoio para a coluna.' },
+                'cadeira_abdutora': { name: 'Cadeira Abdutora', series: 3, reps: '15-20', rest: '60-90s', muscleGroup: 'Glúteos', info: '<strong>Foco:</strong> Incline o tronco ligeiramente para a frente para aumentar a ativação do glúteo médio e máximo.<br><br><strong>Técnica:</strong> Fortalece os glúteos, que são estabilizadores da pelve, algo importante para a saúde da sua lombar.' },
+                'mesa_flexora_a': { name: 'Mesa Flexora', series: 4, reps: '10-15', rest: '60-90s', muscleGroup: 'Posteriores', info: '<strong>Foco:</strong> Mantenha o quadril pressionado contra o banco para isolar os isquiotibiais.<br><br><strong>Técnica:</strong> Trabalha os posteriores de coxa de forma segura e isolada.' },
+                'panturrilha_leg_press': { name: 'Panturrilha no Leg Press', series: 4, reps: '15-20', rest: '60-90s', muscleGroup: 'Panturrilha', info: '<strong>Foco:</strong> Amplitude máxima, alongando bem na base e contraindo no topo.<br><br><strong>Técnica:</strong> Permite trabalhar as panturrilhas com carga elevada sem sobrecarregar a coluna.' },
+                // Treino B
+                'supino_inclinado_halteres': { name: 'Supino Inclinado com Halteres', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Peito', isKey: true, info: '<strong>Foco:</strong> Mantenha as escápulas retraídas e deprimidas. Pense em levar os bíceps um em direção ao outro no final do movimento. Não estenda totalmente os cotovelos.<br><br><strong>Técnica:</strong> Prioriza a porção clavicular (superior) do peitoral, crucial para o "preenchimento" do tórax. Halteres permitem um arco de movimento mais natural e seguro para os ombros.' },
+                'elevacao_lateral_sentado': { name: 'Elevação Lateral com Halteres (Sentado)', series: 4, reps: '12-15', rest: '60-75s', muscleGroup: 'Ombro', isKey: true, info: '<strong>Foco:</strong> Pense em empurrar as mãos para as paredes laterais, não para cima. O cotovelo guia o movimento. Controle a descida em 3 segundos. Na última série, faça um <strong>drop set</strong> (reduza o peso em 30-40% e continue até a falha).<br><br><strong>Técnica:</strong> É o principal construtor da cabeça lateral do deltoide, responsável pela percepção de largura dos ombros e pela criação da "Linha-V".' },
+                'desenvolvimento_maquina': { name: 'Desenvolvimento de Ombros na Máquina', series: 3, reps: '10-15', rest: '90-120s', muscleGroup: 'Ombro', info: '<strong>Foco:</strong> Mantenha o peito estufado e as costas apoiadas.<br><br><strong>Técnica:</strong> Adiciona volume geral aos deltoides com a estabilidade e segurança da máquina.' },
+                'triceps_polia_corda': { name: 'Tríceps na Polia com Corda', series: 3, reps: '10-15', rest: '60-75s', muscleGroup: 'Tríceps', info: '<strong>Foco:</strong> Mantenha os cotovelos fixos ao lado do corpo e concentre-se em estender completamente o antebraço.<br><br><strong>Técnica:</strong> Isola o tríceps de forma eficaz e com baixo estresse nas articulações do cotovelo.' },
+                // Treino C
+                'mesa_flexora_c': { name: 'Mesa Flexora', series: 3, reps: '10-15', rest: '60-90s', muscleGroup: 'Posteriores', info: '<strong>Foco:</strong> Use como aquecimento e pré-ativação dos posteriores.<br><br><strong>Técnica:</strong> Prepara a musculatura para os exercícios seguintes.' },
+                'hack_machine': { name: 'Hack Machine', series: 4, reps: '8-12', rest: '60-90s', muscleGroup: 'Quadríceps', info: '<strong>Foco:</strong> Posicione os pés mais altos na plataforma para maior ênfase em glúteos e posteriores. Controle a descida.<br><br><strong>Técnica:</strong> Alternativa segura ao agachamento livre, pois fornece suporte para a coluna enquanto permite um movimento profundo.' },
+                'elevacao_pelvica': { name: 'Elevação Pélvica', series: 4, reps: '10-15', rest: '60-90s', muscleGroup: 'Glúteos', info: '<strong>Foco:</strong> Contraia o glúteo fortemente no topo do movimento, segurando por 1-2 segundos.<br><br><strong>Técnica:</strong> Construtor primário de densidade e volume para os glúteos, com zero carga compressiva na lombar.' },
+                'cadeira_adutora': { name: 'Cadeira Adutora', series: 3, reps: '15-20', rest: '60-90s', muscleGroup: 'Adutores', info: '<strong>Foco:</strong> Controle o movimento em ambas as direções, sem deixar os pesos baterem.<br><br><strong>Técnica:</strong> Trabalha a parte interna das coxas, contribuindo para a harmonia geral das pernas.' },
+                'panturrilha_sentado': { name: 'Panturrilha Sentado', series: 4, reps: '15-20', rest: '60-90s', muscleGroup: 'Panturrilha', info: '<strong>Foco:</strong> Foco total na amplitude do movimento.<br><br><strong>Técnica:</strong> Isola o músculo sóleo, importante para o volume da panturrilha.' },
+                // Treino D
+                'puxada_frontal_polia': { name: 'Puxada Frontal na Polia (Lat Pulldown)', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Costas', isKey: true, info: '<strong>Foco:</strong> Pegada aberta. Inicie o movimento deprimindo as escápulas (pense em "colocar os ombros no bolso de trás"). Puxe com os cotovelos, não com as mãos.<br><br><strong>Técnica:</strong> Principal exercício para desenvolver a largura do latíssimo do dorso, essencial para a "Linha-V".' },
+                'remada_curvada_halter': { name: 'Remada Curvada com Halter (Apoiado)', series: 3, reps: '10-12/lado', rest: '90-120s', muscleGroup: 'Costas', info: '<strong>Foco:</strong> Mantenha a coluna neutra. Puxe o halter em direção ao quadril, não ao peito, para maximizar a contração do dorsal.<br><br><strong>Técnica:</strong> Constrói espessura no dorso com segurança máxima para a lombar, pois uma mão e um joelho estão apoiados.' },
+                'remada_maquina_neutra': { name: 'Remada na Máquina (Pegada Neutra)', series: 3, reps: '10-15', rest: '90-120s', muscleGroup: 'Costas', info: '<strong>Foco:</strong> Mantenha o peito apoiado. Esprema as escápulas no final do movimento.<br><br><strong>Técnica:</strong> Adiciona volume ao meio das costas com total segurança.' },
+                'face_pull': { name: 'Face Pull', series: 3, reps: '15-20', rest: '60-75s', muscleGroup: 'Ombro', info: '<strong>Foco:</strong> Puxe a corda em direção ao rosto, focando na rotação externa dos ombros.<br><br><strong>Técnica:</strong> Essencial para a saúde dos ombros e para o desenvolvimento do deltoide posterior, que adiciona um aspecto 3D ao físico.' },
+                'rosca_biceps_inclinado': { name: 'Rosca Bíceps com Halteres (Banco Inclinado)', series: 3, reps: '10-15', rest: '60-75s', muscleGroup: 'Bíceps', info: '<strong>Foco:</strong> Permita um alongamento completo do bíceps na base do movimento.<br><br><strong>Técnica:</strong> Excelente exercício para a cabeça longa do bíceps, aproveitando a posição de alongamento para um estímulo hipertrófico único.' }
+            }
+        };
+
+        // --- FUNÇÕES DE RENDERIZAÇÃO E INTERAÇÃO ---
+
+        function renderWorkouts() {
+            const container = document.getElementById('workouts-container');
+            container.innerHTML = ''; // Limpa o container antes de renderizar
+
+            workoutData.workouts.forEach(workout => {
+                const workoutCard = document.createElement('div');
+                workoutCard.className = 'bg-white p-5 rounded-xl shadow-md border border-gray-200/80';
+
+                let exercisesHtml = '';
+                workout.exercises.forEach(exerciseId => {
+                    const exercise = workoutData.exercises[exerciseId];
+                    const keyExerciseIcon = exercise.isKey ? '<span class="text-yellow-500" title="Exercício-Chave">⭐</span>' : '';
+                    exercisesHtml += `
+                        <div class="flex items-center justify-between bg-gray-50 border border-gray-200/80 rounded-lg p-3">
+                            <div>
+                                <p class="font-semibold text-gray-700">${exercise.name} ${keyExerciseIcon}</p>
+                                <p class="text-sm text-gray-500"><span class="font-semibold">${exercise.series} séries</span> de <span class="font-semibold">${exercise.reps} reps</span></p>
+                            </div>
+                            <button onclick="showExerciseModal('${exerciseId}')" title="Ver Detalhes" class="flex-shrink-0 ml-4 w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors focus:outline-none">
+                               <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                           </button>
+                        </div>`;
+                });
+
+                workoutCard.innerHTML = `
+                    <header class="flex justify-between items-center mb-4 pb-3 border-b border-gray-200/80">
+                        <h2 class="text-lg font-bold text-blue-700">${workout.name}</h2>
+                    </header>
+                    <div class="space-y-3">${exercisesHtml}</div>`;
+
+                container.appendChild(workoutCard);
+            });
+        }
+        
+        function renderAnalysisDashboard() {
+            const container = document.getElementById('analysis-dashboard');
+
+            // --- Cálculos ---
+            const totalWorkouts = workoutData.workouts.length;
+            const totalExercises = Object.keys(workoutData.exercises).length;
+            let totalSeries = 0;
+            const seriesPerMuscleGroup = {};
+
+            Object.values(workoutData.exercises).forEach(exercise => {
+                totalSeries += exercise.series;
+                const group = exercise.muscleGroup;
+                if (seriesPerMuscleGroup[group]) {
+                    seriesPerMuscleGroup[group] += exercise.series;
+                } else {
+                    seriesPerMuscleGroup[group] = exercise.series;
+                }
+            });
+            
+            // --- Renderização ---
+            container.innerHTML = `
+                <!-- Resumo Card -->
+                <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200/80">
+                    <h2 class="text-lg font-bold text-blue-700 mb-4">Resumo Semanal</h2>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div class="bg-blue-50 p-3 rounded-lg"><p class="text-sm text-blue-800 font-semibold">Treinos</p><p class="text-2xl font-bold text-blue-600">${totalWorkouts}</p></div>
+                        <div class="bg-green-50 p-3 rounded-lg"><p class="text-sm text-green-800 font-semibold">Exercícios</p><p class="text-2xl font-bold text-green-600">${totalExercises}</p></div>
+                        <div class="bg-yellow-50 p-3 rounded-lg"><p class="text-sm text-yellow-800 font-semibold">Séries Totais</p><p class="text-2xl font-bold text-yellow-600">${totalSeries}</p></div>
+                    </div>
+                </div>
+
+                <!-- Volume por Grupo Muscular Card -->
+                <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200/80">
+                    <h2 class="text-lg font-bold text-blue-700 mb-4">Volume por Grupo Muscular (Séries/Semana)</h2>
+                    <canvas id="muscleVolumeChart"></canvas>
+                </div>
+            `;
+
+            // --- Renderiza o Gráfico ---
+            const ctx = document.getElementById('muscleVolumeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(seriesPerMuscleGroup),
+                    datasets: [{
+                        label: 'Nº de Séries',
+                        data: Object.values(seriesPerMuscleGroup),
+                        backgroundColor: ['rgba(59, 130, 246, 0.7)', 'rgba(239, 68, 68, 0.7)', 'rgba(245, 158, 11, 0.7)', 'rgba(16, 185, 129, 0.7)', 'rgba(139, 92, 246, 0.7)', 'rgba(236, 72, 153, 0.7)', 'rgba(22, 163, 74, 0.7)'],
+                        borderColor: ['rgba(59, 130, 246, 1)', 'rgba(239, 68, 68, 1)', 'rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)', 'rgba(139, 92, 246, 1)', 'rgba(236, 72, 153, 1)', 'rgba(22, 163, 74, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, ticks: { stepSize: 2 } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function showExerciseModal(exerciseId) {
+            const exercise = workoutData.exercises[exerciseId];
+            if (!exercise) return;
+
+            const modal = document.getElementById('exercise-modal');
+            const titleEl = document.getElementById('exercise-modal-title');
+            const contentEl = document.getElementById('exercise-modal-content');
+
+            titleEl.textContent = exercise.name;
+            contentEl.innerHTML = `
+                <p><span class="font-semibold">Grupo Muscular:</span> ${exercise.muscleGroup}</p>
+                <div class="mt-2">${exercise.info}</div>
+                <div class="grid grid-cols-3 gap-4 text-center mt-4">
+                    <div class="bg-gray-100 p-3 rounded-lg">
+                        <p class="text-sm text-gray-600 font-semibold">Séries</p>
+                        <p class="text-xl font-bold text-gray-800">${exercise.series}</p>
+                    </div>
+                     <div class="bg-gray-100 p-3 rounded-lg">
+                        <p class="text-sm text-gray-600 font-semibold">Repetições</p>
+                        <p class="text-xl font-bold text-gray-800">${exercise.reps}</p>
+                    </div>
+                     <div class="bg-gray-100 p-3 rounded-lg">
+                        <p class="text-sm text-gray-600 font-semibold">Descanso</p>
+                        <p class="text-xl font-bold text-gray-800">${exercise.rest}</p>
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            document.getElementById(`content-${tabName}`).classList.add('active');
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWorkouts();
+            renderAnalysisDashboard();
+        });
+
+        // Fechar modal com a tecla 'Escape'
+        window.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                closeModal('exercise-modal');
+            }
+        });
+    </script>
+</body>
+</html>
 
