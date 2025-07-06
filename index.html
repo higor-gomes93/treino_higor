@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Base href para funcionamento correto no GitHub Pages -->
+    <base href="/treino_higor/">
+    
     <title>Meu Plano de Treino</title>
+
+    <!-- PWA Manifest e Theme Color -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3B82F6">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192/3B82F6/white?text=Treino">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -277,7 +286,19 @@
                 closeModal('exercise-modal');
             }
         });
+
+        // --- REGISTRO DO SERVICE WORKER ---
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+              .then(registration => {
+                console.log('ServiceWorker registrado com sucesso no escopo:', registration.scope);
+              })
+              .catch(error => {
+                console.log('Registro do ServiceWorker falhou:', error);
+              });
+          });
+        }
     </script>
 </body>
 </html>
-
