@@ -1,8 +1,8 @@
 {
   "name": "Meu Plano de Treino",
   "short_name": "Treino",
-  "scope": "/treino/",
-  "start_url": "/treino/",
+  "scope": "/treino_higor/",
+  "start_url": "/treino_higor/",
   "display": "standalone",
   "background_color": "#f9fafb",
   "theme_color": "#16a34a",
