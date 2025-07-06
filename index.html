@@ -20,37 +20,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; }
-        .modal-backdrop {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 40; opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .modal-content {
-            transform: translateY(20px) scale(0.95);
-            transition: transform 0.3s ease;
-        }
+        .modal-backdrop { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 40; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-content { transform: translateY(20px) scale(0.95); transition: transform 0.3s ease; }
         .modal-backdrop.active { opacity: 1; }
         .modal-backdrop.active .modal-content { transform: translateY(0) scale(1); }
-        .tab-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 0.2s ease-in-out;
-            border: 2px solid transparent;
-        }
-        .tab-btn.active {
-            background-color: #FFF;
-            border-color: #A3BFFA;
-            color: #3B82F6;
-        }
-        .tab-btn:not(.active) {
-            background-color: transparent;
-            color: #6B7280;
-        }
+        .tab-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.2s ease-in-out; border: 2px solid transparent; }
+        .tab-btn.active { background-color: #FFF; border-color: #A3BFFA; color: #3B82F6; }
+        .tab-btn:not(.active) { background-color: transparent; color: #6B7280; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 100;
+            transition: bottom 0.5s ease-in-out;
+        }
+        .toast.show {
+            bottom: 30px;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -88,15 +82,17 @@
     <div id="exercise-modal" class="modal-backdrop flex items-center justify-center" onclick="closeModal('exercise-modal')">
         <div class="modal-content bg-white w-11/12 md:max-w-md mx-auto rounded-lg shadow-xl p-6" onclick="event.stopPropagation()">
             <h3 id="exercise-modal-title" class="text-xl font-bold text-gray-800 mb-4">Detalhes do Exercício</h3>
-            <div id="exercise-modal-content" class="space-y-4 text-gray-700">
-                <!-- Conteúdo do modal inserido via JS -->
-            </div>
+            <div id="exercise-modal-content" class="space-y-4 text-gray-700"></div>
             <button onclick="closeModal('exercise-modal')" class="mt-6 w-full bg-gray-200 text-gray-700 py-2.5 rounded-lg font-semibold hover:bg-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Fechar</button>
         </div>
     </div>
+    
+    <!-- Toast de Notificação -->
+    <div id="toast-notification" class="toast">Cargas Salvas!</div>
 
     <script>
-        // --- BANCO DE DADOS DOS TREINOS ---
+        // --- BANCO DE DADOS E ESTADO GLOBAL ---
+        let userLoads = {}; // Objeto para guardar as cargas do usuário
         const workoutData = {
             workouts: [
                 { id: 'treino_a', name: 'Treino A: Inferiores (Quadríceps e Glúteos)', exercises: ['cadeira_extensora_a', 'leg_press_45_a', 'cadeira_abdutora', 'mesa_flexora_a', 'panturrilha_leg_press'] },
@@ -131,29 +127,62 @@
             }
         };
 
+        // --- FUNÇÕES DE ARMAZENAMENTO LOCAL ---
+
+        function saveLoads() {
+            try {
+                localStorage.setItem('userWorkoutLoads', JSON.stringify(userLoads));
+                showToast('Cargas Salvas!');
+                renderAnalysisDashboard(); // Atualiza a análise após salvar
+            } catch (e) {
+                console.error("Erro ao salvar no localStorage:", e);
+                showToast('Erro ao salvar!', true);
+            }
+        }
+
+        function loadLoads() {
+            try {
+                const savedLoads = localStorage.getItem('userWorkoutLoads');
+                if (savedLoads) {
+                    userLoads = JSON.parse(savedLoads);
+                }
+            } catch (e) {
+                console.error("Erro ao carregar do localStorage:", e);
+                userLoads = {};
+            }
+        }
+
         // --- FUNÇÕES DE RENDERIZAÇÃO E INTERAÇÃO ---
 
         function renderWorkouts() {
             const container = document.getElementById('workouts-container');
-            container.innerHTML = ''; // Limpa o container antes de renderizar
+            container.innerHTML = ''; 
 
             workoutData.workouts.forEach(workout => {
                 const workoutCard = document.createElement('div');
                 workoutCard.className = 'bg-white p-5 rounded-xl shadow-md border border-gray-200/80';
+                workoutCard.id = `workout-card-${workout.id}`;
 
                 let exercisesHtml = '';
                 workout.exercises.forEach(exerciseId => {
                     const exercise = workoutData.exercises[exerciseId];
                     const keyExerciseIcon = exercise.isKey ? '<span class="text-yellow-500" title="Exercício-Chave">⭐</span>' : '';
+                    const savedLoad = userLoads[exerciseId] || '';
+                    
                     exercisesHtml += `
-                        <div class="flex items-center justify-between bg-gray-50 border border-gray-200/80 rounded-lg p-3">
-                            <div>
+                        <div class="grid grid-cols-12 gap-2 items-center bg-gray-50 border border-gray-200/80 rounded-lg p-3">
+                            <div class="col-span-8">
                                 <p class="font-semibold text-gray-700">${exercise.name} ${keyExerciseIcon}</p>
-                                <p class="text-sm text-gray-500"><span class="font-semibold">${exercise.series} séries</span> de <span class="font-semibold">${exercise.reps} reps</span></p>
+                                <p class="text-sm text-gray-500"><span class="font-semibold">${exercise.series}s</span> x <span class="font-semibold">${exercise.reps}r</span></p>
                             </div>
-                            <button onclick="showExerciseModal('${exerciseId}')" title="Ver Detalhes" class="flex-shrink-0 ml-4 w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors focus:outline-none">
-                               <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                           </button>
+                            <div class="col-span-3">
+                                <input type="text" data-exercise-id="${exerciseId}" value="${savedLoad}" placeholder="kg" class="w-full p-2 text-center font-semibold border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none">
+                            </div>
+                            <div class="col-span-1 flex justify-end">
+                                <button onclick="showExerciseModal('${exerciseId}')" title="Ver Detalhes" class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors focus:outline-none">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </button>
+                            </div>
                         </div>`;
                 });
 
@@ -161,7 +190,10 @@
                     <header class="flex justify-between items-center mb-4 pb-3 border-b border-gray-200/80">
                         <h2 class="text-lg font-bold text-blue-700">${workout.name}</h2>
                     </header>
-                    <div class="space-y-3">${exercisesHtml}</div>`;
+                    <div class="space-y-3">${exercisesHtml}</div>
+                    <div class="mt-6">
+                        <button onclick="handleSaveClick('${workout.id}')" class="w-full bg-blue-500 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-600 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">Salvar Cargas</button>
+                    </div>`;
 
                 container.appendChild(workoutCard);
             });
@@ -170,44 +202,47 @@
         function renderAnalysisDashboard() {
             const container = document.getElementById('analysis-dashboard');
 
-            // --- Cálculos ---
+            // Cálculos
             const totalWorkouts = workoutData.workouts.length;
             const totalExercises = Object.keys(workoutData.exercises).length;
             let totalSeries = 0;
+            let totalVolume = 0;
             const seriesPerMuscleGroup = {};
 
-            Object.values(workoutData.exercises).forEach(exercise => {
+            Object.entries(workoutData.exercises).forEach(([id, exercise]) => {
                 totalSeries += exercise.series;
                 const group = exercise.muscleGroup;
-                if (seriesPerMuscleGroup[group]) {
-                    seriesPerMuscleGroup[group] += exercise.series;
-                } else {
-                    seriesPerMuscleGroup[group] = exercise.series;
+                seriesPerMuscleGroup[group] = (seriesPerMuscleGroup[group] || 0) + exercise.series;
+
+                const load = parseFloat(userLoads[id]) || 0;
+                if (load > 0) {
+                    const repsText = exercise.reps.split('-').map(r => parseInt(r.trim()));
+                    const avgReps = repsText.length > 1 ? (repsText[0] + repsText[1]) / 2 : repsText[0];
+                    totalVolume += load * exercise.series * avgReps;
                 }
             });
             
-            // --- Renderização ---
             container.innerHTML = `
-                <!-- Resumo Card -->
                 <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200/80">
                     <h2 class="text-lg font-bold text-blue-700 mb-4">Resumo Semanal</h2>
-                    <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                         <div class="bg-blue-50 p-3 rounded-lg"><p class="text-sm text-blue-800 font-semibold">Treinos</p><p class="text-2xl font-bold text-blue-600">${totalWorkouts}</p></div>
                         <div class="bg-green-50 p-3 rounded-lg"><p class="text-sm text-green-800 font-semibold">Exercícios</p><p class="text-2xl font-bold text-green-600">${totalExercises}</p></div>
                         <div class="bg-yellow-50 p-3 rounded-lg"><p class="text-sm text-yellow-800 font-semibold">Séries Totais</p><p class="text-2xl font-bold text-yellow-600">${totalSeries}</p></div>
+                        <div class="bg-red-50 p-3 rounded-lg"><p class="text-sm text-red-800 font-semibold">Volume Total</p><p class="text-xl font-bold text-red-600">${totalVolume.toLocaleString('pt-BR')} kg</p></div>
                     </div>
                 </div>
-
-                <!-- Volume por Grupo Muscular Card -->
                 <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200/80">
                     <h2 class="text-lg font-bold text-blue-700 mb-4">Volume por Grupo Muscular (Séries/Semana)</h2>
                     <canvas id="muscleVolumeChart"></canvas>
                 </div>
             `;
 
-            // --- Renderiza o Gráfico ---
             const ctx = document.getElementById('muscleVolumeChart').getContext('2d');
-            new Chart(ctx, {
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+            window.myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: Object.keys(seriesPerMuscleGroup),
@@ -219,44 +254,37 @@
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    indexAxis: 'y',
-                    scales: {
-                        x: { beginAtZero: true, ticks: { stepSize: 2 } }
-                    },
-                    plugins: { legend: { display: false } }
+                options: { indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { stepSize: 2 } } }, plugins: { legend: { display: false } } }
+            });
+        }
+        
+        function handleSaveClick(workoutId) {
+            const workoutCard = document.getElementById(`workout-card-${workoutId}`);
+            const inputs = workoutCard.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                const exerciseId = input.dataset.exerciseId;
+                if (input.value) {
+                    userLoads[exerciseId] = input.value;
+                } else {
+                    delete userLoads[exerciseId]; // Remove se o campo estiver vazio
                 }
             });
+            saveLoads();
         }
 
         function showExerciseModal(exerciseId) {
             const exercise = workoutData.exercises[exerciseId];
             if (!exercise) return;
-
             const modal = document.getElementById('exercise-modal');
-            const titleEl = document.getElementById('exercise-modal-title');
-            const contentEl = document.getElementById('exercise-modal-content');
-
-            titleEl.textContent = exercise.name;
-            contentEl.innerHTML = `
+            document.getElementById('exercise-modal-title').textContent = exercise.name;
+            document.getElementById('exercise-modal-content').innerHTML = `
                 <p><span class="font-semibold">Grupo Muscular:</span> ${exercise.muscleGroup}</p>
                 <div class="mt-2">${exercise.info}</div>
                 <div class="grid grid-cols-3 gap-4 text-center mt-4">
-                    <div class="bg-gray-100 p-3 rounded-lg">
-                        <p class="text-sm text-gray-600 font-semibold">Séries</p>
-                        <p class="text-xl font-bold text-gray-800">${exercise.series}</p>
-                    </div>
-                     <div class="bg-gray-100 p-3 rounded-lg">
-                        <p class="text-sm text-gray-600 font-semibold">Repetições</p>
-                        <p class="text-xl font-bold text-gray-800">${exercise.reps}</p>
-                    </div>
-                     <div class="bg-gray-100 p-3 rounded-lg">
-                        <p class="text-sm text-gray-600 font-semibold">Descanso</p>
-                        <p class="text-xl font-bold text-gray-800">${exercise.rest}</p>
-                    </div>
-                </div>
-            `;
-
+                    <div class="bg-gray-100 p-3 rounded-lg"><p class="text-sm text-gray-600 font-semibold">Séries</p><p class="text-xl font-bold text-gray-800">${exercise.series}</p></div>
+                    <div class="bg-gray-100 p-3 rounded-lg"><p class="text-sm text-gray-600 font-semibold">Repetições</p><p class="text-xl font-bold text-gray-800">${exercise.reps}</p></div>
+                    <div class="bg-gray-100 p-3 rounded-lg"><p class="text-sm text-gray-600 font-semibold">Descanso</p><p class="text-xl font-bold text-gray-800">${exercise.rest}</p></div>
+                </div>`;
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
         }
@@ -272,31 +300,35 @@
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.getElementById(`tab-${tabName}`).classList.add('active');
             document.getElementById(`content-${tabName}`).classList.add('active');
+            if (tabName === 'analise') {
+                renderAnalysisDashboard();
+            }
+        }
+        
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast-notification');
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#dc3545' : '#28a745';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
         // --- INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
+            loadLoads();
             renderWorkouts();
             renderAnalysisDashboard();
         });
 
-        // Fechar modal com a tecla 'Escape'
-        window.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                closeModal('exercise-modal');
-            }
-        });
+        window.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal('exercise-modal'); } });
 
-        // --- REGISTRO DO SERVICE WORKER ---
         if ('serviceWorker' in navigator) {
           window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js')
-              .then(registration => {
-                console.log('ServiceWorker registrado com sucesso no escopo:', registration.scope);
-              })
-              .catch(error => {
-                console.log('Registro do ServiceWorker falhou:', error);
-              });
+              .then(reg => console.log('ServiceWorker Registrado', reg.scope))
+              .catch(err => console.log('Registro do ServiceWorker Falhou:', err));
           });
         }
     </script>
