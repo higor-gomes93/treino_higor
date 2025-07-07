@@ -52,7 +52,7 @@
     <div class="container mx-auto px-4 pt-10 pb-12 md:px-6 md:pt-12 max-w-2xl">
         <header class="text-center mb-8">
             <h1 class="text-3xl font-extrabold tracking-tight text-gray-800">Meu Plano de Treino</h1>
-            <p class="text-md text-gray-600 mt-1">Fase 1: Foco em Harmonia e Proporção</p>
+            <p class="text-md text-gray-600 mt-1">Fase 1: Divisão 5 Dias (Foco em Volume e Harmonia)</p>
         </header>
 
         <!-- Navegação por Abas -->
@@ -67,13 +67,13 @@
                 <div id="workouts-container" class="space-y-8">
                     <!-- Os treinos serão inseridos aqui pelo JavaScript -->
                 </div>
-                <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 06/07/2025</p>
+                <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 07/07/2025</p>
             </div>
             <div id="content-analise" class="tab-content">
                 <div id="analysis-dashboard" class="space-y-6">
                     <!-- Dashboard de Análise será inserido aqui -->
                 </div>
-                 <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 06/07/2025</p>
+                 <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 07/07/2025</p>
             </div>
         </main>
     </div>
@@ -95,35 +95,42 @@
         let userLoads = {}; // Objeto para guardar as cargas do usuário
         const workoutData = {
             workouts: [
-                { id: 'treino_a', name: 'Treino A: Inferiores (Quadríceps e Glúteos)', exercises: ['cadeira_extensora_a', 'leg_press_45_a', 'cadeira_abdutora', 'mesa_flexora_a', 'panturrilha_leg_press'] },
-                { id: 'treino_b', name: 'Treino B: Superiores (Peitoral Superior e Ombros)', exercises: ['supino_inclinado_halteres', 'elevacao_lateral_sentado', 'desenvolvimento_maquina', 'triceps_polia_corda'] },
-                { id: 'treino_c', name: 'Treino C: Inferiores (Posteriores e Glúteos)', exercises: ['mesa_flexora_c', 'hack_machine', 'elevacao_pelvica', 'cadeira_adutora', 'panturrilha_sentado'] },
-                { id: 'treino_d', name: 'Treino D: Superiores (Largura do Dorso)', exercises: ['puxada_frontal_polia', 'remada_curvada_halter', 'remada_maquina_neutra', 'face_pull', 'rosca_biceps_inclinado'] }
+                { id: 'dia_1', name: 'Dia 1: Peito', exercises: ['supino_inclinado_peito', 'supino_reto_maquina', 'voador_peck_deck', 'crucifixo_polia_alta'] },
+                { id: 'dia_2', name: 'Dia 2: Costas', exercises: ['puxada_frontal_costas', 'remada_curvada_halter_costas', 'remada_maquina_pronada', 'pulldown_corda'] },
+                { id: 'dia_3', name: 'Dia 3: Braços e Panturrilhas', exercises: ['triceps_polia_braco', 'triceps_frances_halter', 'rosca_direta_braco', 'rosca_banco_inclinado_braco', 'panturrilha_sentado_braco'] },
+                { id: 'dia_4', name: 'Dia 4: Ombros', exercises: ['elevacao_lateral_ombros', 'desenvolvimento_maquina_ombros', 'elevacao_frontal_anilha', 'face_pull_ombros'] },
+                { id: 'dia_5', name: 'Dia 5: Pernas', exercises: ['cadeira_extensora_pernas', 'leg_press_45_pernas', 'hack_machine_pernas', 'mesa_flexora_pernas', 'cadeira_flexora_pernas', 'elevacao_pelvica_pernas', 'panturrilha_pe_pernas'] }
             ],
             exercises: {
-                // Treino A
-                'cadeira_extensora_a': { name: 'Cadeira Extensora', series: 3, reps: '10-15', rest: '60-90s', muscleGroup: 'Quadríceps', info: '<strong>Foco:</strong> Use como aquecimento e pré-ativação. Concentre-se em espremer o quadríceps no pico de contração por 1-2 segundos.<br><br><strong>Técnica:</strong> Isola o quadríceps com segurança, aumentando o fluxo sanguíneo para a região antes dos exercícios compostos, sem carga axial na coluna.' },
-                'leg_press_45_a': { name: 'Leg Press 45°', series: 4, reps: '8-12', rest: '60-90s', muscleGroup: 'Quadríceps', info: '<strong>Foco:</strong> Mantenha os pés na largura dos ombros. Controle a descida (fase excêntrica) e evite que a sua lombar perca o contato com o banco (retroversão pélvica).<br><br><strong>Técnica:</strong> Exercício base para volume de pernas com alta capacidade de carga e total apoio para a coluna.' },
-                'cadeira_abdutora': { name: 'Cadeira Abdutora', series: 3, reps: '15-20', rest: '60-90s', muscleGroup: 'Glúteos', info: '<strong>Foco:</strong> Incline o tronco ligeiramente para a frente para aumentar a ativação do glúteo médio e máximo.<br><br><strong>Técnica:</strong> Fortalece os glúteos, que são estabilizadores da pelve, algo importante para a saúde da sua lombar.' },
-                'mesa_flexora_a': { name: 'Mesa Flexora', series: 4, reps: '10-15', rest: '60-90s', muscleGroup: 'Posteriores', info: '<strong>Foco:</strong> Mantenha o quadril pressionado contra o banco para isolar os isquiotibiais.<br><br><strong>Técnica:</strong> Trabalha os posteriores de coxa de forma segura e isolada.' },
-                'panturrilha_leg_press': { name: 'Panturrilha no Leg Press', series: 4, reps: '15-20', rest: '60-90s', muscleGroup: 'Panturrilha', info: '<strong>Foco:</strong> Amplitude máxima, alongando bem na base e contraindo no topo.<br><br><strong>Técnica:</strong> Permite trabalhar as panturrilhas com carga elevada sem sobrecarregar a coluna.' },
-                // Treino B
-                'supino_inclinado_halteres': { name: 'Supino Inclinado com Halteres', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Peito', isKey: true, info: '<strong>Foco:</strong> Mantenha as escápulas retraídas e deprimidas. Pense em levar os bíceps um em direção ao outro no final do movimento. Não estenda totalmente os cotovelos.<br><br><strong>Técnica:</strong> Prioriza a porção clavicular (superior) do peitoral, crucial para o "preenchimento" do tórax. Halteres permitem um arco de movimento mais natural e seguro para os ombros.' },
-                'elevacao_lateral_sentado': { name: 'Elevação Lateral com Halteres (Sentado)', series: 4, reps: '12-15', rest: '60-75s', muscleGroup: 'Ombro', isKey: true, info: '<strong>Foco:</strong> Pense em empurrar as mãos para as paredes laterais, não para cima. O cotovelo guia o movimento. Controle a descida em 3 segundos. Na última série, faça um <strong>drop set</strong> (reduza o peso em 30-40% e continue até a falha).<br><br><strong>Técnica:</strong> É o principal construtor da cabeça lateral do deltoide, responsável pela percepção de largura dos ombros e pela criação da "Linha-V".' },
-                'desenvolvimento_maquina': { name: 'Desenvolvimento de Ombros na Máquina', series: 3, reps: '10-15', rest: '90-120s', muscleGroup: 'Ombro', info: '<strong>Foco:</strong> Mantenha o peito estufado e as costas apoiadas.<br><br><strong>Técnica:</strong> Adiciona volume geral aos deltoides com a estabilidade e segurança da máquina.' },
-                'triceps_polia_corda': { name: 'Tríceps na Polia com Corda', series: 3, reps: '10-15', rest: '60-75s', muscleGroup: 'Tríceps', info: '<strong>Foco:</strong> Mantenha os cotovelos fixos ao lado do corpo e concentre-se em estender completamente o antebraço.<br><br><strong>Técnica:</strong> Isola o tríceps de forma eficaz e com baixo estresse nas articulações do cotovelo.' },
-                // Treino C
-                'mesa_flexora_c': { name: 'Mesa Flexora', series: 3, reps: '10-15', rest: '60-90s', muscleGroup: 'Posteriores', info: '<strong>Foco:</strong> Use como aquecimento e pré-ativação dos posteriores.<br><br><strong>Técnica:</strong> Prepara a musculatura para os exercícios seguintes.' },
-                'hack_machine': { name: 'Hack Machine', series: 4, reps: '8-12', rest: '60-90s', muscleGroup: 'Quadríceps', info: '<strong>Foco:</strong> Posicione os pés mais altos na plataforma para maior ênfase em glúteos e posteriores. Controle a descida.<br><br><strong>Técnica:</strong> Alternativa segura ao agachamento livre, pois fornece suporte para a coluna enquanto permite um movimento profundo.' },
-                'elevacao_pelvica': { name: 'Elevação Pélvica', series: 4, reps: '10-15', rest: '60-90s', muscleGroup: 'Glúteos', info: '<strong>Foco:</strong> Contraia o glúteo fortemente no topo do movimento, segurando por 1-2 segundos.<br><br><strong>Técnica:</strong> Construtor primário de densidade e volume para os glúteos, com zero carga compressiva na lombar.' },
-                'cadeira_adutora': { name: 'Cadeira Adutora', series: 3, reps: '15-20', rest: '60-90s', muscleGroup: 'Adutores', info: '<strong>Foco:</strong> Controle o movimento em ambas as direções, sem deixar os pesos baterem.<br><br><strong>Técnica:</strong> Trabalha a parte interna das coxas, contribuindo para a harmonia geral das pernas.' },
-                'panturrilha_sentado': { name: 'Panturrilha Sentado', series: 4, reps: '15-20', rest: '60-90s', muscleGroup: 'Panturrilha', info: '<strong>Foco:</strong> Foco total na amplitude do movimento.<br><br><strong>Técnica:</strong> Isola o músculo sóleo, importante para o volume da panturrilha.' },
-                // Treino D
-                'puxada_frontal_polia': { name: 'Puxada Frontal na Polia (Lat Pulldown)', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Costas', isKey: true, info: '<strong>Foco:</strong> Pegada aberta. Inicie o movimento deprimindo as escápulas (pense em "colocar os ombros no bolso de trás"). Puxe com os cotovelos, não com as mãos.<br><br><strong>Técnica:</strong> Principal exercício para desenvolver a largura do latíssimo do dorso, essencial para a "Linha-V".' },
-                'remada_curvada_halter': { name: 'Remada Curvada com Halter (Apoiado)', series: 3, reps: '10-12/lado', rest: '90-120s', muscleGroup: 'Costas', info: '<strong>Foco:</strong> Mantenha a coluna neutra. Puxe o halter em direção ao quadril, não ao peito, para maximizar a contração do dorsal.<br><br><strong>Técnica:</strong> Constrói espessura no dorso com segurança máxima para a lombar, pois uma mão e um joelho estão apoiados.' },
-                'remada_maquina_neutra': { name: 'Remada na Máquina (Pegada Neutra)', series: 3, reps: '10-15', rest: '90-120s', muscleGroup: 'Costas', info: '<strong>Foco:</strong> Mantenha o peito apoiado. Esprema as escápulas no final do movimento.<br><br><strong>Técnica:</strong> Adiciona volume ao meio das costas com total segurança.' },
-                'face_pull': { name: 'Face Pull', series: 3, reps: '15-20', rest: '60-75s', muscleGroup: 'Ombro', info: '<strong>Foco:</strong> Puxe a corda em direção ao rosto, focando na rotação externa dos ombros.<br><br><strong>Técnica:</strong> Essencial para a saúde dos ombros e para o desenvolvimento do deltoide posterior, que adiciona um aspecto 3D ao físico.' },
-                'rosca_biceps_inclinado': { name: 'Rosca Bíceps com Halteres (Banco Inclinado)', series: 3, reps: '10-15', rest: '60-75s', muscleGroup: 'Bíceps', info: '<strong>Foco:</strong> Permita um alongamento completo do bíceps na base do movimento.<br><br><strong>Técnica:</strong> Excelente exercício para a cabeça longa do bíceps, aproveitando a posição de alongamento para um estímulo hipertrófico único.' }
+                // Dia 1: Peito
+                'supino_inclinado_peito': { name: 'Supino Inclinado com Halteres', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Peito', isKey: true, info: '<strong>Foco:</strong> Prioridade para o peitoral superior.' },
+                'supino_reto_maquina': { name: 'Supino Reto na Máquina ou com Halteres', series: 3, reps: '10-12', rest: '90-120s', muscleGroup: 'Peito', info: '<strong>Foco:</strong> Adiciona volume e trabalha a porção medial (meio) do peitoral.' },
+                'voador_peck_deck': { name: 'Voador (Peck Deck)', series: 3, reps: '12-15', rest: '60s', muscleGroup: 'Peito', info: '<strong>Foco:</strong> Máxima contração e "esmagamento" do peitoral.' },
+                'crucifixo_polia_alta': { name: 'Crucifixo na Polia Alta', series: 3, reps: '12-15', rest: '60s', muscleGroup: 'Peito', info: '<strong>Foco:</strong> Alongamento e trabalho na porção inferior e externa do peitoral.' },
+                // Dia 2: Costas
+                'puxada_frontal_costas': { name: 'Puxada Frontal na Polia (Lat Pulldown)', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Costas', isKey: true, info: '<strong>Foco:</strong> Prioridade para a largura do dorso.' },
+                'remada_curvada_halter_costas': { name: 'Remada Curvada com Halter (Apoiado no Banco)', series: 4, reps: '10-12/lado', rest: '90-120s', muscleGroup: 'Costas', info: '<strong>Foco:</strong> Espessura do dorso com máxima segurança para a lombar.' },
+                'remada_maquina_pronada': { name: 'Remada na Máquina (Pegada Pronada ou Aberta)', series: 3, reps: '10-15', rest: '90-120s', muscleGroup: 'Costas', info: '<strong>Foco:</strong> Trabalhar a parte alta das costas e trapézio.' },
+                'pulldown_corda': { name: 'Pulldown com Corda ou Barra Reta', series: 3, reps: '12-15', rest: '60s', muscleGroup: 'Costas', info: '<strong>Foco:</strong> Isolar o latíssimo do dorso, melhorando a conexão mente-músculo.' },
+                // Dia 3: Braços e Panturrilhas
+                'triceps_polia_braco': { name: 'Tríceps na Polia (Barra Reta ou V)', series: 4, reps: '10-15', rest: '60-75s', muscleGroup: 'Tríceps', info: '' },
+                'triceps_frances_halter': { name: 'Tríceps Francês com Halter', series: 3, reps: '12-15', rest: '60-75s', muscleGroup: 'Tríceps', info: '<strong>Foco:</strong> Trabalha a cabeça longa do tríceps, que dá mais volume ao braço.' },
+                'rosca_direta_braco': { name: 'Rosca Direta com Barra ou Halteres', series: 4, reps: '10-12', rest: '60-75s', muscleGroup: 'Bíceps', info: '' },
+                'rosca_banco_inclinado_braco': { name: 'Rosca no Banco Inclinado com Halteres', series: 3, reps: '12-15', rest: '60-75s', muscleGroup: 'Bíceps', info: '<strong>Foco:</strong> Alongamento e pico do bíceps.' },
+                'panturrilha_sentado_braco': { name: 'Panturrilha Sentado', series: 4, reps: '15-20', rest: '60-75s', muscleGroup: 'Panturrilha', info: '<strong>Foco:</strong> Segundo estímulo semanal para panturrilhas, com foco no músculo sóleo.' },
+                // Dia 4: Ombros
+                'elevacao_lateral_ombros': { name: 'Elevação Lateral com Halteres (Sentado)', series: 5, reps: '12-15', rest: '60-75s', muscleGroup: 'Ombro', isKey: true, info: '<strong>Foco:</strong> Aumentamos o volume aqui. Este é o exercício mais importante para a largura dos seus ombros. Na última série, faça um drop set.' },
+                'desenvolvimento_maquina_ombros': { name: 'Desenvolvimento de Ombros na Máquina', series: 4, reps: '10-12', rest: '60-75s', muscleGroup: 'Ombro', info: '<strong>Foco:</strong> Volume geral para os deltoides.' },
+                'elevacao_frontal_anilha': { name: 'Elevação Frontal com anilha ou halteres', series: 3, reps: '12-15', rest: '60-75s', muscleGroup: 'Ombro', info: '<strong>Foco:</strong> Trabalhar a cabeça anterior dos deltoides.' },
+                'face_pull_ombros': { name: 'Face Pull', series: 4, reps: '15-20', rest: '60-75s', muscleGroup: 'Ombro', info: '<strong>Foco:</strong> Saúde articular e deltoide posterior.' },
+                // Dia 5: Pernas
+                'cadeira_extensora_pernas': { name: 'Cadeira Extensora (Pré-Exaustão)', series: 3, reps: '15-20', rest: '60s', muscleGroup: 'Quadríceps', info: '<strong>Foco:</strong> Levar o quadríceps à fadiga inicial. Use uma carga moderada e concentre-se na contração.' },
+                'leg_press_45_pernas': { name: 'Leg Press 45°', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Pernas', info: '<strong>Foco:</strong> Exercício base para volume geral de pernas.' },
+                'hack_machine_pernas': { name: 'Hack Machine ou Afundo com Halteres', series: 4, reps: '10-15', rest: '90-120s', muscleGroup: 'Pernas', info: '<strong>Foco:</strong> Segundo exercício composto para garantir alto volume e estímulo em um ângulo diferente.' },
+                'mesa_flexora_pernas': { name: 'Mesa Flexora', series: 4, reps: '10-15', rest: '60s', muscleGroup: 'Posteriores', info: '<strong>Foco:</strong> Principal exercício para os isquiotibiais (posteriores).' },
+                'cadeira_flexora_pernas': { name: 'Cadeira Flexora', series: 3, reps: '12-15', rest: '60s', muscleGroup: 'Posteriores', info: '<strong>Foco:</strong> Volume adicional para os isquiotibiais em uma posição diferente (sentado).' },
+                'elevacao_pelvica_pernas': { name: 'Elevação Pélvica (Máquina ou Barra)', series: 4, reps: '10-15', rest: '60s', muscleGroup: 'Glúteos', info: '<strong>Foco:</strong> Exercício chave para o desenvolvimento dos glúteos.' },
+                'panturrilha_pe_pernas': { name: 'Panturrilhas (em pé ou no leg press)', series: 5, reps: '15-20', rest: '60s', muscleGroup: 'Panturrilha', info: '' }
             }
         };
 
