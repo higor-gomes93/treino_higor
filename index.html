@@ -50,7 +50,7 @@
     <div class="container mx-auto px-4 pt-10 pb-12 md:px-6 md:pt-12 max-w-2xl">
         <header class="text-center mb-8">
             <h1 class="text-3xl font-extrabold tracking-tight text-gray-800">Meu Plano de Treino</h1>
-            <p class="text-md text-gray-600 mt-1">Foco em Hipertrofia, Performance e Segurança Articular (Versão 2.0)</p>
+            <p class="text-md text-gray-600 mt-1">Foco em Hipertrofia, Performance e Segurança Articular (Versão 2.2)</p>
         </header>
 
         <nav class="p-1 mb-8 bg-blue-100 rounded-lg flex justify-center space-x-2">
@@ -62,12 +62,12 @@
             <div id="content-treino" class="tab-content active">
                 <div id="workouts-container" class="space-y-8">
                     </div>
-                <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 06/07/2025</p>
+                <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 01/09/2025</p>
             </div>
             <div id="content-analise" class="tab-content">
                 <div id="analysis-dashboard" class="space-y-6">
                     </div>
-                 <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 06/07/2025</p>
+                 <p class="text-center text-xs text-gray-400 mt-8">Atualizado em 01/09/2025</p>
             </div>
         </main>
     </div>
@@ -90,37 +90,37 @@
         const workoutData = {
             workouts: [
                 { id: 'dia1', name: 'Segunda: Posterior de Coxa, Glúteos & Panturrilhas', exercises: ['mesa_flexora', 'cadeira_flexora', 'leg_press_unilateral', 'cadeira_abdutora_seg', 'panturrilha_leg', 'panturrilha_sentado'] },
-                { id: 'dia2', name: 'Terça: Peito (foco em volume) & Ombro Lateral', exercises: ['supino_inclinado_h', 'supino_reto_m', 'voador', 'cross_over_polia_alta', 'elevacao_lateral_h'] },
-                { id: 'dia3', name: 'Quinta: Costas (foco em espessura) & Ombros', exercises: ['puxada_frontal', 'remada_maquina_n', 'pulldown_corda', 'remada_unilateral_maquina', 'desenvolvimento_h_sentado'] },
+                { id: 'dia2', name: 'Terça: Peito & Ombros (Foco Anterior/Medial)', exercises: ['supino_inclinado_h', 'supino_reto_m', 'voador', 'cross_over_polia_alta', 'desenvolvimento_maquina'] },
+                { id: 'dia3', name: 'Quinta: Costas & Ombros (Foco Posterior)', exercises: ['puxada_frontal', 'remada_maquina_n', 'pulldown_corda', 'remada_unilateral_maquina', 'crucifixo_inverso_maquina'] },
                 { id: 'dia4', name: 'Sexta: Quadríceps & Panturrilhas', exercises: ['cadeira_extensora', 'leg_press_45', 'agachamento_hack', 'cadeira_adutora', 'panturrilha_pe'] },
-                { id: 'dia5', name: 'Sábado: Braços, Ombro Lateral & Trapézio', exercises: ['rosca_direta_w', 'rosca_alternada_h_inclinado', 'triceps_pulley_barra', 'triceps_corda_polia', 'elevacao_lateral_h_sab', 'encolhimento_h'] }
+                { id: 'dia5', name: 'Sábado: Braços, Ombro Lateral & Trapézio', exercises: ['rosca_direta_w', 'rosca_alternada_h_inclinado', 'triceps_pulley_barra', 'triceps_testa_polia_uni', 'elevacao_lateral_h_sab', 'elevacao_lateral_polia_sab', 'encolhimento_h'] }
             ],
             exercises: {
                 // Segunda: Posterior, Glúteos & Panturrilhas
-                'mesa_flexora': { name: 'Mesa Flexora', series: 4, reps: '8-12', rest: '60-90s', muscleGroup: 'Posteriores', info: '<strong>Dicas de Execução:</strong> Mantenha o quadril pressionado contra o banco. Execute a fase de subida (concêntrica) de forma explosiva e controle a descida (excêntrica) lentamente.' },
+                'mesa_flexora': { name: 'Mesa Flexora', series: 4, reps: '8-12', rest: '60-90s', muscleGroup: 'Posteriores', info: '<strong>Dicas de Execução:</strong> Mantenha o quadril pressionado contra o banco. Execute a subida de forma explosiva e controle a descida lentamente.' },
                 'cadeira_flexora': { name: 'Cadeira Flexora', series: 4, reps: '10-15', rest: '60-90s', muscleGroup: 'Posteriores', info: '<strong>Dicas de Execução:</strong> Alinhe o eixo da máquina com seus joelhos. Foque na amplitude completa, espremendo os posteriores no final do movimento.' },
-                'leg_press_unilateral': { name: 'Leg Press Unilateral na Máquina', series: 4, reps: '10-12/perna', rest: '90-120s', muscleGroup: 'Glúteos', info: '<strong>Dicas de Execução:</strong> Posicione um pé no centro da plataforma. A outra perna fica relaxada. Controle a descida, focando em "empurrar o chão" com o calcanhar na subida para maximizar a ativação do glúteo.' },
-                'cadeira_abdutora_seg': { name: 'Cadeira Abdutora', series: 4, reps: '15-20', rest: '60-90s', muscleGroup: 'Glúteos', info: '<strong>Dicas de Execução:</strong> Incline o tronco ligeiramente para a frente para maior foco no glúteo. Execute o movimento de forma potente e controlada, segurando a contração máxima por 1 a 2 segundos. A fase de retorno deve ser ainda mais lenta.' },
+                'leg_press_unilateral': { name: 'Leg Press Unilateral na Máquina', series: 4, reps: '10-12/perna', rest: '90-120s', muscleGroup: 'Glúteos', info: '<strong>Dicas de Execução:</strong> Posicione um pé no centro da plataforma. Controle a descida, focando em "empurrar o chão" com o calcanhar na subida para maximizar a ativação do glúteo.' },
+                'cadeira_abdutora_seg': { name: 'Cadeira Abdutora', series: 4, reps: '15-20', rest: '60-90s', muscleGroup: 'Glúteos', info: '<strong>Dicas de Execução:</strong> Incline o tronco ligeiramente para a frente para maior foco no glúteo. Execute o movimento de forma potente e controlada, segurando a contração máxima por 1 a 2 segundos.' },
                 'panturrilha_leg': { name: 'Panturrilha no Leg Press', series: 5, reps: '10-15', rest: '60-90s', muscleGroup: 'Panturrilha', info: '<strong>Dicas de Execução:</strong> Use apenas a ponta dos pés na plataforma. Alongue ao máximo na descida e segure o pico de contração na subida.' },
                 'panturrilha_sentado': { name: 'Panturrilha Sentado (Cadeira Solear)', series: 5, reps: '15-20', rest: '60-90s', muscleGroup: 'Panturrilha', info: '<strong>Dicas de Execução:</strong> Isola o músculo sóleo. Amplitude máxima e pico de contração são a chave.' },
 
-                // Terça: Peito & Ombro Lateral
-                'supino_inclinado_h': { name: 'Supino Inclinado com Halteres (30-45º)', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Peito', info: '<strong>Dicas de Execução:</strong> "Trave" suas escápulas. Ao subir, pense em levar os bíceps um em direção ao outro, esmagando o peitoral.' },
+                // Terça: Peito & Ombros (Foco Anterior/Medial)
+                'supino_inclinado_h': { name: 'Supino Inclinado com Halteres (30-45º)', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Peito', info: '<strong>Dicas de Execução:</strong> "Trave" suas escápulas. Ao subir, pense em levar os bíceps um em direção ao outro.' },
                 'supino_reto_m': { name: 'Supino Reto na Máquina', series: 4, reps: '10-12', rest: '90-120s', muscleGroup: 'Peito', info: '<strong>Dicas de Execução:</strong> Ajuste o banco para que as pegas fiquem na altura do meio do seu peito. Mantenha a retração escapular.' },
-                'voador': { name: 'Voador (Peck Deck)', series: 3, reps: '12-15', rest: '60-90s', muscleGroup: 'Peito', info: '<strong>Dicas de Execução:</strong> Mantenha as costas e os ombros colados no apoio. Movimento em arco, como se estivesse abraçando uma árvore.' },
-                'cross_over_polia_alta': { name: 'Cross Over na Polia Alta', series: 3, reps: '12-15', rest: '60-90s', muscleGroup: 'Peito', info: '<strong>Dicas de Execução:</strong> Posicione as polias no ponto mais alto. Dê um passo à frente. Com os cotovelos levemente flexionados, puxe as pegas para baixo e para a frente até que suas mãos se encontrem na frente da sua cintura.' },
-                'elevacao_lateral_h': { name: 'Elevação Lateral com Halteres', series: 5, reps: '12-15', rest: '60-90s', muscleGroup: 'Ombro', info: '<strong>Dicas de Execução:</strong> O principal construtor da porção medial (lateral) do deltoide. Eleve os braços para os lados, pensando em "alcançar as paredes". Não ultrapasse a linha dos ombros.' },
+                'voador': { name: 'Voador (Peck Deck)', series: 3, reps: '12-15', rest: '60-90s', muscleGroup: 'Peito', info: '<strong>Dicas de Execução:</strong> Movimento em arco, como se estivesse abraçando uma árvore.' },
+                'cross_over_polia_alta': { name: 'Cross Over na Polia Alta', series: 3, reps: '12-15', rest: '60-90s', muscleGroup: 'Peito', info: '<strong>Dicas de Execução:</strong> Posicione as polias no ponto mais alto. Puxe as pegas para baixo e para a frente até que suas mãos se encontrem na frente da sua cintura.' },
+                'desenvolvimento_maquina': { name: 'Desenvolvimento na Máquina', series: 4, reps: '10-12', rest: '90-120s', muscleGroup: 'Ombro', info: '<strong>Dicas de Execução:</strong> Mantenha as costas bem apoiadas. Pressione para cima até quase estender os cotovelos, mantendo a tensão nos ombros.' },
 
-                // Quinta: Costas & Ombros
+                // Quinta: Costas & Ombros (Foco Posterior)
                 'puxada_frontal': { name: 'Puxada Frontal na Polia (Pegada Aberta)', series: 4, reps: '8-12', rest: '90-120s', muscleGroup: 'Costas', info: '<strong>Dicas de Execução:</strong> Deprima as escápulas antes de puxar. Lidere o movimento com os cotovelos.' },
                 'remada_maquina_n': { name: 'Remada na Máquina (Pegada Neutra ou Supinada)', series: 4, reps: '10-12', rest: '90-120s', muscleGroup: 'Costas', info: '<strong>Dicas de Execução:</strong> Inicie puxando as escápulas para trás e depois flexione os cotovelos.' },
                 'pulldown_corda': { name: 'Pulldown com Corda ou Barra Reta', series: 3, reps: '12-15', rest: '60-90s', muscleGroup: 'Costas', info: '<strong>Dicas de Execução:</strong> Mantenha os braços quase retos e puxe em um movimento de arco até as coxas.' },
-                'remada_unilateral_maquina': { name: 'Remada Unilateral na Máquina', series: 3, reps: '10-12/lado', rest: '60-90s', muscleGroup: 'Costas', info: '<strong>Dicas de Execução:</strong> O trabalho unilateral ajuda a focar na contração e a garantir um desenvolvimento simétrico. Puxe o pegador em direção ao seu quadril, mantendo o tronco estável. Foque em "puxar com o cotovelo" e espremer o dorsal.' },
-                'desenvolvimento_h_sentado': { name: 'Desenvolvimento com Halteres (Sentado com Apoio)', series: 4, reps: '10-12', rest: '90-120s', muscleGroup: 'Ombro', info: '<strong>Dicas de Execução:</strong> Principal exercício de "empurrar" para os ombros. Desça os halteres até a linha das orelhas e suba até um ponto antes de travar os cotovelos.' },
+                'remada_unilateral_maquina': { name: 'Remada Unilateral na Máquina', series: 3, reps: '10-12/lado', rest: '60-90s', muscleGroup: 'Costas', info: '<strong>Dicas de Execução:</strong> Puxe o pegador em direção ao seu quadril, mantendo o tronco estável. Foque em "puxar com o cotovelo".' },
+                'crucifixo_inverso_maquina': { name: 'Crucifixo Invertido na Máquina', series: 4, reps: '12-15', rest: '60-90s', muscleGroup: 'Ombro', info: '<strong>Dicas de Execução:</strong> Mantenha o peito bem apoiado. Execute o movimento com os braços quase estendidos, focando em afastar as mãos e espremer as escápulas.' },
                 
                 // Sexta: Quadríceps & Panturrilhas
                 'cadeira_extensora': { name: 'Cadeira Extensora', series: 4, reps: '10-15', rest: '60s', muscleGroup: 'Quadríceps', info: '<strong>Dicas de Execução:</strong> Última série com dropset. Segure a contração por um segundo no topo de cada repetição.' },
-                'leg_press_45': { name: 'Leg Press 45º', series: 5, reps: '10-15', rest: '90-120s', muscleGroup: 'Pernas', info: '<strong>Dicas de Execução:</strong> Mantenha a lombar e o quadril colados ao banco. Não estenda completamente os joelhos no topo.' },
+                'leg_press_45': { name: 'Leg Press 45º', series: 5, reps: '10-15', rest: '90-120s', muscleGroup: 'Pernas', info: '<strong>Dicas de Execução:</strong> Mantenha a lombar e o quadril colados ao banco.' },
                 'agachamento_hack': { name: 'Agachamento Hack', series: 4, reps: '10-12', rest: '90-120s', muscleGroup: 'Pernas', info: '<strong>Dicas de Execução:</strong> Posicione os pés mais baixos na plataforma para maior ênfase no quadríceps.' },
                 'cadeira_adutora': { name: 'Cadeira Adutora', series: 3, reps: '15-20', rest: '60-90s', muscleGroup: 'Adutores', info: '<strong>Dicas de Execução:</strong> Movimento controlado, "esmagando" os joelhos um contra o outro no final.' },
                 'panturrilha_pe': { name: 'Panturrilhas em Pé (Máquina ou Smith)', series: 5, reps: '10-15', rest: '60-90s', muscleGroup: 'Panturrilha', info: '<strong>Dicas de Execução:</strong> Amplitude total é a chave.' },
@@ -129,9 +129,10 @@
                 'rosca_direta_w': { name: 'Rosca Direta com Barra W', series: 4, reps: '10-12', rest: '60-90s', muscleGroup: 'Bíceps', info: '<strong>Dicas de Execução:</strong> Mantenha os cotovelos "travados" ao lado do corpo.' },
                 'rosca_alternada_h_inclinado': { name: 'Rosca Alternada com Halteres (Banco Inclinado)', series: 3, reps: '12-15', rest: '60-90s', muscleGroup: 'Bíceps', info: '<strong>Dicas de Execução:</strong> Deixe o braço estender completamente em baixo. Ao subir, gire o punho (supinação).' },
                 'triceps_pulley_barra': { name: 'Tríceps Pulley com Barra Reta ou V', series: 4, reps: '10-12', rest: '60-90s', muscleGroup: 'Tríceps', info: '<strong>Dicas de Execução:</strong> Mantenha os cotovelos fixos ao lado do tronco.' },
-                'triceps_corda_polia': { name: 'Tríceps Corda na Polia Alta', series: 3, reps: '12-15', rest: '60-90s', muscleGroup: 'Tríceps', info: '<strong>Dicas de Execução:</strong> No final do movimento, "afaste" as pontas da corda.' },
+                'triceps_testa_polia_uni': { name: 'Tríceps Testa Unilateral na Polia', series: 3, reps: '12-15', rest: '60-90s', muscleGroup: 'Tríceps', info: '<strong>Dicas de Execução:</strong> Deite-se em um banco reto com a cabeça para a polia baixa. Puxe o cabo sobre sua cabeça, mantendo o cotovelo apontando para o teto.' },
                 'elevacao_lateral_h_sab': { name: 'Elevação Lateral com Halteres', series: 4, reps: '15-20', rest: '60-90s', muscleGroup: 'Ombro', info: '<strong>Dicas de Execução:</strong> Use uma carga mais leve e foque na "queimação".' },
-                'encolhimento_h': { name: 'Encolhimento com Halteres', series: 4, reps: '12-15', rest: '60-90s', muscleGroup: 'Trapézio', info: '<strong>Dicas de Execução:</strong> O movimento é puramente vertical. Pense em "encolher os ombros para tocar as orelhas". Segure a contração máxima no topo por 2 segundos. Use straps se a pegada falhar.' }
+                'elevacao_lateral_polia_sab': { name: 'Elevação Lateral na Polia', series: 3, reps: '15-20/lado', rest: '60-90s', muscleGroup: 'Ombro', info: '<strong>Dicas de Execução:</strong> Posicione a polia em baixo e fique de lado para a máquina. Puxe o cabo cruzando pela frente do corpo e eleve lateralmente.' },
+                'encolhimento_h': { name: 'Encolhimento com Halteres', series: 4, reps: '12-15', rest: '60-90s', muscleGroup: 'Trapézio', info: '<strong>Dicas de Execução:</strong> O movimento é puramente vertical. Pense em "encolher os ombros para tocar as orelhas". Segure a contração máxima no topo por 2 segundos.' }
             }
         };
 
